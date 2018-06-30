@@ -22,7 +22,7 @@ impl<'a> ShiftCodeInfo<'a> {
 	}
 }
 
-pub fn gen_objs<'a>() -> (&'a str, a'ShiftRegCodeInfo) {
+pub fn gen_objs<'a>() -> (&'a str, &'static ShiftRegCodeInfo) {
 	let inst = ["add","addu","and","div","divu"
 	,"mfhi","mflo","mfc0","mult","multu","nor","xor","or"
 	,"slt","sltu","sll","srl","sra","sub","subu"];

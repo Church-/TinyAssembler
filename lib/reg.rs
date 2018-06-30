@@ -22,7 +22,7 @@ impl<'a> RegCodeInfo<'a> {
 	}
 }
 
-pub fn gen_objs<'a>() -> (&'a str, a'RegCodeInfo) {
+pub fn gen_objs<'a>() -> (&'a str, &'static RegCodeInfo) {
 	let inst = ["add","addu","and","div","divu"
 	,"mfhi","mflo","mfc0","mult","multu","nor","xor","or"
 	,"slt","sltu","sll","srl","sra","sub","subu"];
