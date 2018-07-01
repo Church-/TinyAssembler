@@ -1,11 +1,12 @@
-pub struct JumpCodeInfo<'a> {
-	inst: &'a str,
-	opcode: &'a str,
-	func_code: &'a str,
+#[derive(Clone)]
+pub struct JumpCodeInfo {
+	inst: String,
+	opcode: String,
+	func_code: String,
 }
 
-impl<'a> JumpCodeInfo<'a> {
-	pub fn new(inst: &'a str, opcode: &'a str, func_code: &'a str) -> JumpCodeInfo<'a> {
+impl JumpCodeInfo {
+	pub fn new(inst: String, opcode: String, func_code: String) -> JumpCodeInfo {
 		JumpCodeInfo {
 			inst: inst,
 			opcode: opcode,
@@ -13,16 +14,17 @@ impl<'a> JumpCodeInfo<'a> {
 		}
 	}
 
-	pub fn get_func_code(&self) -> &'a str {
+	pub fn get_func_code(&self) -> String {
 		return self.func_code
 	}
 
-	pub fn get_opcode(&self) -> &'a str {
+	pub fn get_opcode(&self) -> String {
 		return self.opcode
 	}
 }
 
-pub fn gen_objs<'a>() -> (&'a str, &'static JumpCodeInfo) {
+pub fn gen_jump_objs() -> Vec<(String, JumpCodeInfo)> {
+	let mut tmpVec: Vec<(String, JumpCodeInfo)> = Vec::new();
 	let inst = ["add","addu","and","div","divu"
 	,"mfhi","mflo","mfc0","mult","multu","nor","xor","or"
 	,"slt","sltu","sll","srl","sra","sub","subu"];
@@ -31,8 +33,9 @@ pub fn gen_objs<'a>() -> (&'a str, &'static JumpCodeInfo) {
 	,"0x0","0x0","0x0","0x0", "0x0","0x0"];
 	let func_code = [];
 
-	for i in inst.len() {
+	for i in 0..inst.len() {
 
 		
 	}
+	return tmpVec
 }

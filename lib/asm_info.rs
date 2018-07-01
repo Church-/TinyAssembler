@@ -1,31 +1,38 @@
 use std::collections::HashMap;
-use lib::reg::RegCodeInfo;
-use lib::jr::JRCodeInfo;
-use lib::shift_reg::ShiftRegCodeInfo;
-use lib::jump::JumpCodeInfo;
-use lib::imm::ImmCodeInfo;
+use lib::reg::{gen_reg_objs, gen_reg_codes,RegCodeInfo};
+use lib::jr::{gen_jr_objs, JRCodeInfo};
+use lib::shift_reg::{gen_shift_objs, ShiftRegCodeInfo};
+use lib::jump::{gen_jump_objs, JumpCodeInfo};
+use lib::imm::{gen_imm_objs, ImmCodeInfo};
 
-pub struct CodeInfo<'a> {
-	pub reg_codes: HashMap<&'a str, RegCodeInfo>,
-	pub jr_code: HashMap<&'a str, JRCodeInfo>,
-	pub shift_reg_codes: HashMap<&'a str, ShiftRegCodeInfo>,
-	pub jump_codes: HashMap<&'a str, JumpCodeInfo>,
-	pub imm_codes: HashMap<&'a str, ImmCodeInfo>,
-	pub regs: HashMap<&'a str, &'a str>,
-	pub labels: HashMap<&'a str, usize>,
+pub struct CodeInfo {
+	pub reg_codes: HashMap<String, RegCodeInfo>,
+	pub jr_code: HashMap<String, JRCodeInfo>,
+	pub shift_reg_codes: HashMap<String, ShiftRegCodeInfo>,
+	pub jump_codes: HashMap<String, JumpCodeInfo>,
+	pub imm_codes: HashMap<String, ImmCodeInfo>,
+	pub regs: HashMap<String,String>,
+	pub labels: HashMap<String, usize>,
 	pub line_num: usize,
 }
 
-impl<'a> CodeInfo<'a> {
+impl CodeInfo {
 
-	pub fn new() -> CodeInfo<'a> {
+	pub fn new() -> CodeInfo {
+		let reg_codes_vec = gen_reg_objs();
+		let jr_code_vec = gen_jr_objs();
+		let shift_reg_codes_vec = gen_shift_objs();
+		let imm_codes_vec = gen_imm_objs();
+		let jump_codes_vec = gen_jump_objs();
+		let regs_vec = gen_reg_codes();
+		
 		CodeInfo {
-			reg_codes: [("A","B")].iter().cloned().collect(),
-			jr_code: [("","")].iter().cloned().collect(),
-			shift_reg_codes: [("","")].iter().cloned().collect(),
-			imm_codes: [("A","B")].iter().cloned().collect(),
-			jump_codes: [("A","B")].iter().cloned().collect(),
-			regs: [("A","B")].iter().cloned().collect(),
+			reg_codes: reg_codes_vec.into_iter().clone().collect(),
+			jr_code: jr_code_vec.into_iter().clone().collect(),
+			shift_reg_codes: shift_reg_codes_vec.into_iter().clone().collect(),
+			imm_codes: imm_codes_vec.into_iter().clone().collect(),
+			jump_codes: jump_codes_vec.into_iter().clone().collect(),
+			regs: regs_vec.into_iter().clone().collect(),
 			labels: HashMap::new(),
 			line_num: 0,
 		}

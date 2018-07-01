@@ -1,11 +1,12 @@
-pub struct ImmCodeInfo<'a> {
-	inst: &'a str,
-	opcode: &'a str,
-	func_code: &'a str,
+#[derive(Clone)]
+pub struct ImmCodeInfo {
+	inst: String,
+	opcode: String,
+	func_code: String,
 }
 
-impl<'a> ImmCodeInfo<'a> {
-	pub	fn new(inst: &'a str, opcode: &'a str, func_code: &'a str) -> ImmCodeInfo<'a> {
+impl ImmCodeInfo {
+	pub	fn new(inst: String, opcode: String, func_code: String) -> ImmCodeInfo {
 		ImmCodeInfo {
 			inst: inst,
 			opcode: opcode,
@@ -13,16 +14,17 @@ impl<'a> ImmCodeInfo<'a> {
 		}
 	}
 
-	pub	fn get_func_code(&self) -> &'a str {
+	pub	fn get_func_code(&self) -> String {
 		return self.func_code
 	}
 
-	pub fn get_opcode(&self) -> &'a str {
+	pub fn get_opcode(&self) -> String {
 		return self.opcode
 	}
 }
 
-fn gen_objs<'a>() -> (&'a str, &'static ImmCodeInfo) {
+pub fn gen_imm_objs() -> Vec<(String, ImmCodeInfo)> {
+	let tmpVec: Vec<(String, ImmCodeInfo)> = Vec::new();
 	let inst = ["add","addu","and","div","divu"
 	,"mfhi","mflo","mfc0","mult","multu","nor","xor","or"
 	,"slt","sltu","sll","srl","sra","sub","subu"];
@@ -31,8 +33,8 @@ fn gen_objs<'a>() -> (&'a str, &'static ImmCodeInfo) {
 	,"0x0","0x0","0x0","0x0", "0x0","0x0"];
 	let func_code = [];
 
-	for i in inst.len() {
-
+	for i in 0..inst.len() {
 		
 	}
+	return tmpVec
 }

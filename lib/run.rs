@@ -1,67 +1,70 @@
 //extern crate rand;
+extern crate failure;
 
 use std::str::Lines;
 use std::str;
+use std::env::args;
 use std::io::Read;
 use std::io::prelude;
 use std::fs::File;
+use failure::Error;
 //use rand::Rng;
 use lib::CodeInfo;
 
-fn convert_line(line: Vec<&str>, mut info: &CodeInfo) -> String {
+fn convert_line(line: Vec<String>, mut info: &CodeInfo) -> Result<String,Error> {
 	let mut tmpBuf = String::new();
-	match info.jump_codes.contains_key(line[0]) {
+	match info.jump_codes.contains_key(&line[0]) {
 		true => {
 			if line.len() > 2 { 
 				panic!("Incorrect number of arguments. Check line #{}",info.line_num); 
 			}
 			else {
-				tmpBuf.push_str(info.jump_codes.get(line[0]).unwrap());
-				tmpBuf.push_str((line[1].split("0x").nth(1).unwrap()));
+				tmpBuf.push_str(&info.jump_codes.get(&line[0])?);
+				tmpBuf.push_str(&line[1].split("0x").nth(1)?);
 				}
 			},
 			_ => (),
 		}
 
-	match info.jr_code.contains_key([0]) {
+	match info.jr_code.contains_key(&line[0]) {
 		true => {
 			if line.len() != 2 { 
 				panic!("Incorrect number of arguments. Check line #{}",info.line_num); 
 			}
 			else {
-				tmpBuf.push_str(info.reg_codes.get(line[0]).get_opcode());//Jump Reg Opcode
-				tmpBuf.push_str(info.regs.get(line[1]));//Reg
+				tmpBuf.push_str(&info.reg_codes.get(&line[0])?.get_opcode());//Jump Reg Opcode
+				tmpBuf.push_str(&info.regs.get(&line[1])?.get_);//Reg
 				tmpBuf.push_str("");//Two other regs and shift amount
-				tmpBuf.push_str(info.reg_codes.get(line[0]).get_func_code());//Func Code
+				tmpBuf.push_str(&info.reg_codes.get(&line[0])?.get_func_code());//Func Code
 			}		
 		},
 		_ => (),
 	}
 
 
-	match info.shift_code.contains_key(line[0]) {
+	match info.shift_code.contains_key(&line[0]) {
 		true => {
 			if line.len() != 4 { 
 				panic!("Incorrect number of arguments. Check line #{}",info.line_num); 
 			}
 			else {
-				tmpBuf.push_str(info.regs.get(line[1]));//Reg
-				tmpBuf.push_str(info.regs.get(line[2]));//reg
+				tmpBuf.push_str(&info.regs.get(&line[1])?);//Reg
+				tmpBuf.push_str(&info.regs.get(&line[2])?);//reg
 				tmpBuf.push_str("00000");// Zero'd out reg
-				tmpBuf.push_str(line[3]);//Shift Amount
-				tmpBuf.push_str(info.reg_codes.get(line[0]).get_func_code());//Func Code
+				tmpBuf.push_str(&line[3]);//Shift Amount
+				tmpBuf.push_str(&info.reg_codes.get(&line[0])?.get_func_code());//Func Code
 			}
 		},
 		_ => (),
 	}
 	
-	match info.reg_codes.contains_key(line[0]) {
+	match info.reg_codes.contains_key(&line[0]) {
 		true => {
 			if line.len() != 4 { 
 				panic!("Incorrect number of arguments. Check line #{}",info.line_num); 
 			}
 			else {
-				tmpBuf.push_str(info.reg_codes.get(line[0]).get_opcode());//Most other OP Codes
+				tmpBuf.push_str(&info.reg_codes.get(&line[0])?.get_opcode());//Most other OP Codes
 				line.iter()
 					.skip(1)
 					.map(|x| 
@@ -69,10 +72,10 @@ fn convert_line(line: Vec<&str>, mut info: &CodeInfo) -> String {
 							true => { 
 									line.iter()
 										.skip(1)
-										.map(|x| tmpBuf.push_str(info.regs.get(x)));
+										.map(|x| tmpBuf.push_str(&info.regs.get(x).unwrap());
 
 									tmpBuf.push_str("00000");//Shift Amount
-									tmpBuf.push_str(info.reg_codes.get(line[0]).get_func_code());//Func Code
+									tmpBuf.push_str(&info.reg_codes.get(&line[0])?.get_func_code());//Func Code
 								},
 							_ => panic!("Incorrect arguments. Check line #{}",info.line_num),
 				});
@@ -83,28 +86,28 @@ fn convert_line(line: Vec<&str>, mut info: &CodeInfo) -> String {
 			_ => (),
 		}
 
-	match info.imm_codes.contains_key(line[0]) {
+	match info.imm_codes.contains_key(&line[0]) {
 		true => {},
 		_ => (),
 		}
 	
 	
-/*	match info.pseudo_opcodes.contains_key(line[0]) {
+/*	match info.pseudo_opcodes.contains_key(&line[0]) {
 				
 		}*/
 
-	return tmpBuf
+	tmpBuf
 }
 
 
 
-fn assemble_loop<'a>(prog_lines: std::str::Lines<'a>,mut info: CodeInfo<'a>) -> String {
+fn assemble_loop(prog_lines: Lines, mut info: CodeInfo) -> String {
 	let mut address = 10000000; 
 	let mut tmpBuf = String::new();
 	for i in prog_lines {
 		info.line_num += 1;
 		address += 4;
-		let mut line = i.split(" ").collect::<Vec<_>>();
+		let mut line = i.split(" ").collect::<Vec<String>>();
 		match line[0].contains(":") {
 			true => {
 				info.labels.insert(line[0].split(":").nth(0).unwrap(),address);
@@ -125,7 +128,7 @@ fn assemble_loop<'a>(prog_lines: std::str::Lines<'a>,mut info: CodeInfo<'a>) -> 
 pub fn run() {
 	let info = CodeInfo::new();
     let mut buf = String::new();
-    let mut arg: Vec<String> = std::env::args().collect::<_>();
+    let mut arg: Vec<String> = args().collect::<_>();
     let mut f = File::open(&arg[1])
     .expect("Failed to open file");
     f.read_to_string(&mut buf).expect("Failed to write to buffer");

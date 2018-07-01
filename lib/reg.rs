@@ -1,11 +1,12 @@
-pub struct RegCodeInfo<'a> {
-	inst: &'a str,
-	opcode: &'a str,
-	func_code: &'a str,
+#[derive(Clone)]
+pub struct RegCodeInfo {
+	inst: String,
+	opcode: String,
+	func_code: String,
 }
 
-impl<'a> RegCodeInfo<'a> {
-	pub fn new(inst: &'a str, opcode: &'a str, func_code: &'a str) -> RegCodeInfo<'a> {
+impl RegCodeInfo {
+	pub fn new(inst: String, opcode: String, func_code: String) -> RegCodeInfo {
 		RegCodeInfo {
 			inst: inst,
 			opcode: opcode,
@@ -13,16 +14,17 @@ impl<'a> RegCodeInfo<'a> {
 		}
 	}
 
-	pub fn get_func_code(&self) -> &'a str {
+	pub fn get_func_code(&self) -> String {
 		return self.func_code
 	}
 
-	pub fn get_opcode(&self) -> &'a str {
+	pub fn get_opcode(&self) -> String {
 		return self.opcode
 	}
 }
 
-pub fn gen_objs<'a>() -> (&'a str, &'static RegCodeInfo) {
+pub fn gen_reg_codes() -> Vec<(String, String)> {
+	let mut tmpVec: Vec<(String, String)> = Vec::new();
 	let inst = ["add","addu","and","div","divu"
 	,"mfhi","mflo","mfc0","mult","multu","nor","xor","or"
 	,"slt","sltu","sll","srl","sra","sub","subu"];
@@ -31,8 +33,27 @@ pub fn gen_objs<'a>() -> (&'a str, &'static RegCodeInfo) {
 	,"0x0","0x0","0x0","0x0", "0x0","0x0"];
 	let func_code = [];
 
-	for i in inst.len() {
+	for i in 0..inst.len() {
 
 		
 	}
+	return tmpVec
+}
+
+
+pub fn gen_reg_objs() -> Vec<(String, RegCodeInfo)> {
+	let mut tmpVec: Vec<(String, RegCodeInfo)> = Vec::new();
+	let inst = ["add","addu","and","div","divu"
+	,"mfhi","mflo","mfc0","mult","multu","nor","xor","or"
+	,"slt","sltu","sll","srl","sra","sub","subu"];
+	let op = ["0x0","0x0","0x0","0x0","0x0","0x0"
+	,"0x0","0x10","0x0","0x0","0x0","0x0"
+	,"0x0","0x0","0x0","0x0", "0x0","0x0"];
+	let func_code = [];
+
+	for i in 0..inst.len() {
+
+		
+	}
+	return tmpVec
 }
