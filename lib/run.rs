@@ -1,4 +1,4 @@
-//extern crate rand;
+//extern crate rand
 extern crate failure;
 
 use std::str::Lines;
@@ -7,7 +7,7 @@ use std::env::args;
 use std::io::Read;
 use std::io::prelude;
 use std::fs::File;
-use failure::Error;
+use self::failure::Error;
 //use rand::Rng;
 use lib::CodeInfo;
 
@@ -19,40 +19,48 @@ fn convert_line(line: Vec<String>, mut info: &CodeInfo) -> Result<String,Error> 
 				panic!("Incorrect number of arguments. Check line #{}",info.line_num); 
 			}
 			else {
-				tmpBuf.push_str(&info.jump_codes.get(&line[0])?);
-				tmpBuf.push_str(&line[1].split("0x").nth(1)?);
+				tmpBuf.push_str(&info.jump_codes.get(&line[0])
+				.expect("Failed to get value").get_func_code());
+				tmpBuf.push_str(&line[1].split("0x")
+				.nth(1).expect("Failed to get value"));
 				}
 			},
 			_ => (),
 		}
 
-	match info.jr_code.contains_key(&line[0]) {
+	match info.jr_codes.contains_key(&line[0]) {
 		true => {
 			if line.len() != 2 { 
 				panic!("Incorrect number of arguments. Check line #{}",info.line_num); 
 			}
 			else {
-				tmpBuf.push_str(&info.reg_codes.get(&line[0])?.get_opcode());//Jump Reg Opcode
-				tmpBuf.push_str(&info.regs.get(&line[1])?.get_);//Reg
+				tmpBuf.push_str(&info.reg_codes.get(&line[0])
+				.expect("Failed to get value").get_opcode());//Jump Reg Opcode
+				tmpBuf.push_str(&info.regs.get(&line[1])
+				.expect("Failed to get value"));//Reg
 				tmpBuf.push_str("");//Two other regs and shift amount
-				tmpBuf.push_str(&info.reg_codes.get(&line[0])?.get_func_code());//Func Code
+				tmpBuf.push_str(&info.reg_codes.get(&line[0])
+				.expect("Failed to get value").get_func_code());//Func Code
 			}		
 		},
 		_ => (),
 	}
 
 
-	match info.shift_code.contains_key(&line[0]) {
+	match info.shift_reg_codes.contains_key(&line[0]) {
 		true => {
 			if line.len() != 4 { 
 				panic!("Incorrect number of arguments. Check line #{}",info.line_num); 
 			}
 			else {
-				tmpBuf.push_str(&info.regs.get(&line[1])?);//Reg
-				tmpBuf.push_str(&info.regs.get(&line[2])?);//reg
+				tmpBuf.push_str(&info.regs.get(&line[1])
+				.expect("Failed to get value"));//Reg
+				tmpBuf.push_str(&info.regs.get(&line[2])
+				.expect("Failed to get value"));//reg
 				tmpBuf.push_str("00000");// Zero'd out reg
 				tmpBuf.push_str(&line[3]);//Shift Amount
-				tmpBuf.push_str(&info.reg_codes.get(&line[0])?.get_func_code());//Func Code
+				tmpBuf.push_str(&info.reg_codes.get(&line[0])
+				.expect("Failed to get value").get_func_code());//Func Code
 			}
 		},
 		_ => (),
@@ -64,7 +72,8 @@ fn convert_line(line: Vec<String>, mut info: &CodeInfo) -> Result<String,Error> 
 				panic!("Incorrect number of arguments. Check line #{}",info.line_num); 
 			}
 			else {
-				tmpBuf.push_str(&info.reg_codes.get(&line[0])?.get_opcode());//Most other OP Codes
+				tmpBuf.push_str(&info.reg_codes.get(&line[0])
+				.expect("Failed to get value").get_opcode());//Most other OP Codes
 				line.iter()
 					.skip(1)
 					.map(|x| 
@@ -72,10 +81,12 @@ fn convert_line(line: Vec<String>, mut info: &CodeInfo) -> Result<String,Error> 
 							true => { 
 									line.iter()
 										.skip(1)
-										.map(|x| tmpBuf.push_str(&info.regs.get(x).unwrap());
+										.map(|x| tmpBuf.push_str(&info.regs.get(x)
+										.expect("Failed to get value.")));
 
 									tmpBuf.push_str("00000");//Shift Amount
-									tmpBuf.push_str(&info.reg_codes.get(&line[0])?.get_func_code());//Func Code
+									tmpBuf.push_str(&info.reg_codes.get(&line[0])
+									.expect("Failed to get value").get_func_code());//Func Code
 								},
 							_ => panic!("Incorrect arguments. Check line #{}",info.line_num),
 				});
@@ -96,33 +107,46 @@ fn convert_line(line: Vec<String>, mut info: &CodeInfo) -> Result<String,Error> 
 				
 		}*/
 
-	tmpBuf
+	Ok(tmpBuf)
 }
 
 
 
-fn assemble_loop(prog_lines: Lines, mut info: CodeInfo) -> String {
+fn assemble_loop(prog_lines: Lines, mut info: CodeInfo) -> Result<String,Error> {
 	let mut address = 10000000; 
 	let mut tmpBuf = String::new();
 	for i in prog_lines {
+
 		info.line_num += 1;
 		address += 4;
-		let mut line = i.split(" ").collect::<Vec<String>>();
+
+		let mut tmp_line = i.split(" ").collect::<Vec<&str>>();
+		let mut line: Vec<String> = tmp_line.iter()
+											.map(|n| n.to_string())
+											.collect::<Vec<String>>();
+
 		match line[0].contains(":") {
 			true => {
-				info.labels.insert(line[0].split(":").nth(0).unwrap(),address);
+				info.labels.insert(line[0].split(":")
+										  .nth(0)
+										  .expect("Failed to get value")
+										  .to_string(),address);
+
 				if !(line[0].split(":").nth(1).unwrap().to_string().is_empty()) {
-					line[0] = line[0].split(":").nth(1).unwrap();
-					tmpBuf.push_str(&convert_line(line.clone(),&info));
+
+					line[0] = line[0].split(":").nth(1)
+					.expect("Failed to get value").to_string();
+
+					tmpBuf.push_str(&convert_line(line.clone(),&info)?);
 				}
 			},
 			_ => continue,
 		}
 
-		tmpBuf.push_str(&convert_line(line,&info));
+		tmpBuf.push_str(&convert_line(line,&info)?);
 	}
 	
-	return tmpBuf
+	Ok(tmpBuf)
 }
 
 pub fn run() {

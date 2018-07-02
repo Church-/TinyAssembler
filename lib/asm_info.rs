@@ -7,7 +7,7 @@ use lib::imm::{gen_imm_objs, ImmCodeInfo};
 
 pub struct CodeInfo {
 	pub reg_codes: HashMap<String, RegCodeInfo>,
-	pub jr_code: HashMap<String, JRCodeInfo>,
+	pub jr_codes: HashMap<String, JRCodeInfo>,
 	pub shift_reg_codes: HashMap<String, ShiftRegCodeInfo>,
 	pub jump_codes: HashMap<String, JumpCodeInfo>,
 	pub imm_codes: HashMap<String, ImmCodeInfo>,
@@ -20,7 +20,7 @@ impl CodeInfo {
 
 	pub fn new() -> CodeInfo {
 		let reg_codes_vec = gen_reg_objs();
-		let jr_code_vec = gen_jr_objs();
+		let jr_codes_vec = gen_jr_objs();
 		let shift_reg_codes_vec = gen_shift_objs();
 		let imm_codes_vec = gen_imm_objs();
 		let jump_codes_vec = gen_jump_objs();
@@ -28,7 +28,7 @@ impl CodeInfo {
 		
 		CodeInfo {
 			reg_codes: reg_codes_vec.into_iter().clone().collect(),
-			jr_code: jr_code_vec.into_iter().clone().collect(),
+			jr_codes: jr_codes_vec.into_iter().clone().collect(),
 			shift_reg_codes: shift_reg_codes_vec.into_iter().clone().collect(),
 			imm_codes: imm_codes_vec.into_iter().clone().collect(),
 			jump_codes: jump_codes_vec.into_iter().clone().collect(),
