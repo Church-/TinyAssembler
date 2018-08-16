@@ -158,5 +158,6 @@ pub fn run() {
     f.read_to_string(&mut buf).expect("Failed to write to buffer");
     //let prog_lines = buf.split("\n").collect::<Vec<_>>();
 	let prog_lines = buf.lines();
-	assemble_loop(prog_lines,info);
+	let assembly = assemble_loop(prog_lines,info);
+	println!("{}",assembly);
 }
