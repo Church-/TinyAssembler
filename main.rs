@@ -1,7 +1,9 @@
 //extern crate lib;
-use run;
 
+mod lib;
+
+use lib::run::run;
 
 fn main() {
-//	run();
+	run();
 }
