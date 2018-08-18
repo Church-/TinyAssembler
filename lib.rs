@@ -6,4 +6,4 @@ mod shift_reg;
 mod jump;
 mod imm;
 mod util;
-mod run;
+pub mod run;

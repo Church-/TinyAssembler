@@ -9,7 +9,7 @@ use std::io::prelude;
 use std::fs::File;
 use self::failure::Error;
 //use rand::Rng;
-use lib::CodeInfo;
+use CodeInfo;
 
 fn convert_line(line: Vec<String>, mut info: &CodeInfo) -> Result<String,Error> {
 	let mut tmpBuf = String::new();
@@ -149,7 +149,7 @@ fn assemble_loop(prog_lines: Lines, mut info: CodeInfo) -> Result<String,Error> 
 	Ok(tmpBuf)
 }
 
-pub fn run() {
+pub fn run() -> Result<(),()> {
 	let info = CodeInfo::new();
     let mut buf = String::new();
     let mut arg: Vec<String> = args().collect::<_>();
@@ -158,6 +158,7 @@ pub fn run() {
     f.read_to_string(&mut buf).expect("Failed to write to buffer");
     //let prog_lines = buf.split("\n").collect::<Vec<_>>();
 	let prog_lines = buf.lines();
-	let assembly = assemble_loop(prog_lines,info);
+	let assembly = assemble_loop(prog_lines,info).unwrap();
 	println!("{}",assembly);
+	Ok(())
 }

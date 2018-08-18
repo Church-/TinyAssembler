@@ -1,9 +1,9 @@
 use std::collections::HashMap;
-use lib::reg::{gen_reg_objs, gen_reg_codes,RegCodeInfo};
-use lib::jr::{gen_jr_objs, JRCodeInfo};
-use lib::shift_reg::{gen_shift_objs, ShiftRegCodeInfo};
-use lib::jump::{gen_jump_objs, JumpCodeInfo};
-use lib::imm::{gen_imm_objs, ImmCodeInfo};
+use reg::{gen_reg_objs, gen_reg_codes,RegCodeInfo};
+use jr::{gen_jr_objs, JRCodeInfo};
+use shift_reg::{gen_shift_objs, ShiftRegCodeInfo};
+use jump::{gen_jump_objs, JumpCodeInfo};
+use imm::{gen_imm_objs, ImmCodeInfo};
 
 pub struct CodeInfo {
 	pub reg_codes: HashMap<String, RegCodeInfo>,

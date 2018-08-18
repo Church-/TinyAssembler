@@ -15,11 +15,11 @@ impl RegCodeInfo {
 	}
 
 	pub fn get_func_code(&self) -> String {
-		return self.func_code
+		self.func_code.clone()
 	}
 
 	pub fn get_opcode(&self) -> String {
-		return self.opcode
+		self.opcode.clone()
 	}
 }
 
@@ -31,7 +31,7 @@ pub fn gen_reg_codes() -> Vec<(String, String)> {
 	let op = ["0x0","0x0","0x0","0x0","0x0","0x0"
 	,"0x0","0x10","0x0","0x0","0x0","0x0"
 	,"0x0","0x0","0x0","0x0", "0x0","0x0"];
-	let func_code = [];
+//	let func_code = [];
 
 	for i in 0..inst.len() {
 
@@ -49,7 +49,7 @@ pub fn gen_reg_objs() -> Vec<(String, RegCodeInfo)> {
 	let op = ["0x0","0x0","0x0","0x0","0x0","0x0"
 	,"0x0","0x10","0x0","0x0","0x0","0x0"
 	,"0x0","0x0","0x0","0x0", "0x0","0x0"];
-	let func_code = [];
+//	let func_code = [];
 
 	for i in 0..inst.len() {
 
