@@ -1,17 +1,18 @@
 //extern crate rand
-extern crate failure;
+//extern crate failure;
 
 use std::str::Lines;
 use std::str;
 use std::env::args;
+use std::error::Error;
 use std::io::Read;
 use std::io::prelude;
 use std::fs::File;
-use self::failure::Error;
+// use self::failure::Error;
 //use rand::Rng;
-use CodeInfo;
+pub use lib::asm_info::CodeInfo;
 
-fn convert_line(line: Vec<String>, mut info: &CodeInfo) -> Result<String,Error> {
+fn convert_line(line: Vec<String>, mut info: &CodeInfo) -> Result<String, Box<Error>> {
 	let mut tmpBuf = String::new();
 	match info.jump_codes.contains_key(&line[0]) {
 		true => {
@@ -112,7 +113,7 @@ fn convert_line(line: Vec<String>, mut info: &CodeInfo) -> Result<String,Error> 
 
 
 
-fn assemble_loop(prog_lines: Lines, mut info: CodeInfo) -> Result<String,Error> {
+fn assemble_loop(prog_lines: Lines, mut info: CodeInfo) -> Result<String, Box<Error>> {
 	let mut address = 10000000; 
 	let mut tmpBuf = String::new();
 	for i in prog_lines {
